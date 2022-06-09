@@ -1,0 +1,73 @@
+---
+name: Linux build
+on: [push]
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        build_type: [Debug, Release]
+        name: [gcc, clang, windows]
+        build_shared_libs: [ON, OFF]
+        include:
+          - name: gcc
+            ar: /usr/bin/ar
+            cxx: /usr/bin/g++-10
+            ranlib: /usr/bin/ranlib
+            os: ubuntu-latest
+            buildall: all
+          - name: clang
+            ar: /usr/bin/llvm-ar-12
+            cxx: /usr/bin/clang++-12
+            ranlib: /usr/bin/llvm-ranlib-12
+            os: ubuntu-latest
+            buildall: all
+          - name: windows
+            cxx: cl
+            os: windows-latest
+            buildall: ALL_BUILD
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Install gcc
+        if: contains(matrix.cxx, '/g++')
+        run: sudo apt-get install -yq g++-10 gcc-10
+      - name: Install clang
+        if: contains(matrix.cxx, 'clang++')
+        run: sudo apt-get install -yq clang-12 llvm-12
+      - name: Install NSIS (Linux)
+        if: contains(matrix.os, 'ubuntu')
+        run: sudo apt-get install -yq nsis
+      - name: Install NSIS (Windows)
+        if: contains(matrix.os, 'windows')
+        run: |
+          iex "& {$(irm get.scoop.sh)} -RunAsAdmin"
+          scoop bucket add extras
+          scoop install nsis
+      - name: cmake lib
+        run: |
+          mkdir build_lib
+          cmake -S library -B build_lib -DCMAKE_INSTALL_PREFIX="${{ github.workspace }}/install_path" -DCMAKE_CXX_COMPILER="${{ matrix.cxx }}" -DCMAKE_AR="${{ matrix.ar }}" -DCMAKE_RANLIB="${{ matrix.ranlib }}" -DBUILD_SHARED_LIBS:BOOL=${{ matrix.build_shared_libs }} || exit 1
+          cmake --build build_lib/ --target ${{ matrix.buildall }} --config ${{ matrix.build_type }} || exit 1
+          cmake --build build_lib/ --target install --config ${{ matrix.build_type }} || exit 1
+          cd build_lib || exit 1
+          cpack -C ${{ matrix.build_type }} || exit 1
+          cd .. || exit 1
+      - name: ctest lib
+        shell: bash
+        run: |
+          cd build_lib || exit 1
+          ctest -O test-result.xml --output-on-failure --verbose -C ${{ matrix.build_type }} || exit 1
+          cd .. || exit 1
+      - name: cmake main
+        run: |
+          mkdir main
+          cmake -S extern -B main -Dlibrary_DIR="${{ github.workspace }}/install_path/lib/cmake/library" -DCMAKE_CXX_COMPILER="${{ matrix.cxx }}" -DCMAKE_AR="${{ matrix.ar }}" -DCMAKE_RANLIB="${{ matrix.ranlib }}" -DBUILD_SHARED_LIBS:BOOL=${{ matrix.build_shared_libs }} || exit 1
+          cmake --build main/ --target ${{ matrix.buildall }} --config ${{ matrix.build_type }} || exit 1
+      - name: ctest main
+        shell: bash
+        run: |
+          cd main || exit 1
+          ctest -O test-result.xml --output-on-failure --verbose -C ${{ matrix.build_type }} || exit 1
+          cd .. || exit 1
