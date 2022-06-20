@@ -16,8 +16,8 @@ if(BUILD_TESTING)
     add_custom_command(
       TARGET test2
       POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-              $<TARGET_RUNTIME_DLLS:test2> $<TARGET_FILE_DIR:test2>
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_RUNTIME_DLLS:test2>
+              $<TARGET_FILE_DIR:test2>
       COMMAND_EXPAND_LISTS)
   endif()
 endif()

@@ -1,4 +1,4 @@
-#include <lib.h>
+#include <library/lib.h>
 
 namespace Lib {
 LibCalc::LibCalc(double c) : c_(c) {}

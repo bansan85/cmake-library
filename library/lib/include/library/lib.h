@@ -1,6 +1,6 @@
 #pragma once
 
-#include <subfolder/helper.h>
+#include <library/subfolder/helper.h>
 
 namespace Lib {
 class libtest_PUBLIC LibCalc {
@@ -13,8 +13,7 @@ private:
   double c_;
 };
 
-template <typename T>
-class LibCalcT {
+template <typename T> class LibCalcT {
 public:
   LibCalcT(T c) : c_(c) {}
 

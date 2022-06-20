@@ -1,4 +1,4 @@
-#include <lib.h>
+#include <library/lib.h>
 
 int main() {
   Lib::LibCalc calc(23.4);

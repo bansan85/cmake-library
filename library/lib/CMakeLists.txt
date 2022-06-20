@@ -1,13 +1,18 @@
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/version.h.in
-               ${CMAKE_CURRENT_SOURCE_DIR}/include/version.h)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/version.h.in
+               ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/version.h)
 
 set(${PROJECT_NAME}_SRC ${CMAKE_CURRENT_SOURCE_DIR}/src/lib.cpp)
 set(${PROJECT_NAME}_HEADER
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/lib.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/subfolder/helper.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/version.h)
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/library/lib.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/library/subfolder/helper.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/library/version.h)
 
-add_library(${PROJECT_NAME} ${${PROJECT_NAME}_SRC} ${${PROJECT_NAME}_HEADER})
+add_library(${PROJECT_NAME})
+target_sources(
+  ${PROJECT_NAME}
+  PRIVATE ${${PROJECT_NAME}_SRC}
+  PUBLIC FILE_SET HEADERS BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include/ FILES
+         ${${PROJECT_NAME}_HEADER})
 if(BUILD_SHARED_LIBS)
   # EXPORT_ALL_SYMBOLS generates .lib with all symbols from .dll. This is needed
   # because Windows can only link .lib file.
@@ -22,9 +27,8 @@ endif()
 source_group("Header Files" FILES ${${PROJECT_NAME}_HEADER})
 
 target_include_directories(
-  ${PROJECT_NAME}
-  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}>)
+  ${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+                         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 # Don't set PUBLIC_HEADER because files will be installed without keeping
 # structure.
@@ -33,13 +37,13 @@ target_include_directories(
 # "${${PROJECT_NAME}_HEADER}")
 
 # No need to tell more if default values are good.
-install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Targets)
-# Don't forget the trailing / to copy content of the folder instead of the whole
-# folder.
 install(
-  DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
-  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
-  PATTERN "*.in" EXCLUDE)
+  TARGETS ${PROJECT_NAME}
+  EXPORT ${PROJECT_NAME}Targets
+  FILE_SET HEADERS
+  RUNTIME
+  LIBRARY
+  ARCHIVE)
 
 install(
   EXPORT ${PROJECT_NAME}Targets
@@ -63,6 +67,6 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 
 # generate the export targets for the build tree needs to be after the
-# install(TARGETS ) command
+# install(TARGETS) command
 export(EXPORT ${PROJECT_NAME}Targets
        FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
