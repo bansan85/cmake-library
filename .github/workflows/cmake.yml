@@ -12,15 +12,15 @@ jobs:
         include:
           - name: gcc
             ar: /usr/bin/ar
-            cxx: /usr/bin/g++-10
+            cxx: /usr/bin/g++-11
             ranlib: /usr/bin/ranlib
-            os: ubuntu-latest
+            os: ubuntu-22.04
             buildall: all
           - name: clang
-            ar: /usr/bin/llvm-ar-12
-            cxx: /usr/bin/clang++-12
-            ranlib: /usr/bin/llvm-ranlib-12
-            os: ubuntu-latest
+            ar: /usr/bin/llvm-ar-14
+            cxx: /usr/bin/clang++-14
+            ranlib: /usr/bin/llvm-ranlib-14
+            os: ubuntu-22.04
             buildall: all
           - name: windows
             cxx: cl
@@ -32,10 +32,10 @@ jobs:
           submodules: recursive
       - name: Install gcc
         if: contains(matrix.cxx, '/g++')
-        run: sudo apt-get install -yq g++-10 gcc-10
+        run: sudo apt-get install -yq g++-11 gcc-11
       - name: Install clang
         if: contains(matrix.cxx, 'clang++')
-        run: sudo apt-get install -yq clang-12 llvm-12
+        run: sudo apt-get install -yq clang-14 llvm-14
       - name: Install NSIS (Linux)
         if: contains(matrix.os, 'ubuntu')
         run: sudo apt-get install -yq nsis
