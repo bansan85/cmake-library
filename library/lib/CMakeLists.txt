@@ -8,6 +8,12 @@ set(${PROJECT_NAME}_HEADER
     ${CMAKE_CURRENT_SOURCE_DIR}/include/library/version.h)
 
 add_library(${PROJECT_NAME})
+# The use of FILE_SET HEADER keeps the tree folder and group header in Visual
+# Studio instead of PUBLIC_HEADER.
+
+# PUBLIC FILE_SET HEADERS will be installed with the library.
+
+# If some headers are private, set them in PRIVATE FILE_SET HEADERS.
 target_sources(
   ${PROJECT_NAME}
   PRIVATE ${${PROJECT_NAME}_SRC}
@@ -15,28 +21,26 @@ target_sources(
          ${${PROJECT_NAME}_HEADER})
 if(BUILD_SHARED_LIBS)
   # EXPORT_ALL_SYMBOLS generates .lib with all symbols from .dll. This is needed
-  # because Windows can only link .lib file.
+  # because Windows can only link .lib file and will avoid to set the .def file.
   set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-  # No need to set CMAKE_POSITION_INDEPENDENT_CODE. It's already TRUE for shared
-  # library and FALSE for static library.
+  # No need to set CMAKE_POSITION_INDEPENDENT_CODE if you don't mix shared and
+  # static library. It's already TRUE for shared library and FALSE for static
+  # library.
 else(BUILD_SHARED_LIBS)
+  # For static library, you need to add a define to know you built library in
+  # static mode.
   target_compile_definitions(${PROJECT_NAME} PUBLIC ${PROJECT_NAME}_STATIC)
 endif()
 
-# Show headers in Visual Studio.
-source_group("Header Files" FILES ${${PROJECT_NAME}_HEADER})
+# BUILD_INTERFACE will be the include folder when you build the library.
 
+# INSTALL_INTERFACE will be the include folder when you import the library via
+# find_package.
 target_include_directories(
   ${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
                          $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
-# Don't set PUBLIC_HEADER because files will be installed without keeping
-# structure.
-
-# set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER
-# "${${PROJECT_NAME}_HEADER}")
-
-# No need to tell more if default values are good.
+# List all files you want to install.
 install(
   TARGETS ${PROJECT_NAME}
   EXPORT ${PROJECT_NAME}Targets
@@ -45,12 +49,13 @@ install(
   LIBRARY
   ARCHIVE)
 
+# Generate and install Targets.cmake files for find_package.
 install(
   EXPORT ${PROJECT_NAME}Targets
   FILE ${PROJECT_NAME}Targets.cmake
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 
-# Generate and install .cmake files.
+# Generate and install Config.cmake files.
 configure_package_config_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/${PROJECT_NAME}Config.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
@@ -66,7 +71,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
               ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 
-# generate the export targets for the build tree needs to be after the
+# Generation of the export targets for the build tree needs to be after the
 # install(TARGETS) command
 export(EXPORT ${PROJECT_NAME}Targets
        FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
