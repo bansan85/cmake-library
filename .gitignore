@@ -1,2 +1,2 @@
 build*
-library/lib/include/version.h
+library/lib/include/library/version.h
