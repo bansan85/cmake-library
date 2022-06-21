@@ -3,9 +3,9 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/version.h.in
 
 set(${PROJECT_NAME}_SRC ${CMAKE_CURRENT_SOURCE_DIR}/src/lib.cpp)
 set(${PROJECT_NAME}_HEADER
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/library/lib.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/library/subfolder/helper.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/library/version.h)
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/lib.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/subfolder/helper.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/version.h)
 
 add_library(${PROJECT_NAME})
 # The use of FILE_SET HEADER keeps the tree folder and group header in Visual
