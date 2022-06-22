@@ -9,7 +9,8 @@ set(@PROJECT_NAME@_INSTALL_LIBDIR "@CMAKE_INSTALL_LIBDIR@")
 set(@PROJECT_NAME@_INSTALL_DATAROOTDIR "@CMAKE_INSTALL_DATAROOTDIR@")
 set(@PROJECT_NAME@_SHARED_LIBS @BUILD_SHARED_LIBS@)
 
-find_dependency(library CONFIG)
+find_dependency(library2 CONFIG)
+find_dependency(library3 CONFIG)
 
 include(${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake)
 

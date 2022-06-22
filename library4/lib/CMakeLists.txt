@@ -14,6 +14,9 @@ set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_LIBDIR}")
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 add_library(${PROJECT_NAME})
+find_package(library2 REQUIRED)
+find_package(library3 REQUIRED)
+target_link_libraries(${PROJECT_NAME} PUBLIC library2::library2 library3::library3)
 
 # The use of FILE_SET HEADER keeps the tree folder and group header in Visual
 # Studio instead of PUBLIC_HEADER.

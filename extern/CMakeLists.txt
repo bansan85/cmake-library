@@ -10,18 +10,21 @@ option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
 find_package(library REQUIRED)
 find_package(library2 REQUIRED)
 find_package(library3 REQUIRED)
+find_package(library4 REQUIRED)
 
 # add the executable
 add_executable(test1 main1.cpp)
-target_link_libraries(test1 PRIVATE library)
+target_link_libraries(test1 PRIVATE library::library)
 add_executable(test2 main2.cpp)
-target_link_libraries(test2 PRIVATE library2)
+target_link_libraries(test2 PRIVATE library2::library2)
 add_executable(test3 main3.cpp)
-target_link_libraries(test3 PRIVATE library3)
+target_link_libraries(test3 PRIVATE library3::library3)
+add_executable(test4 main4.cpp)
+target_link_libraries(test4 PRIVATE library4::library4)
 
 include(CTest)
 if(BUILD_TESTING)
-  foreach(TESTI test1 test2 test3)
+  foreach(TESTI test1 test2 test3 test4)
     add_test(NAME ${TESTI} COMMAND ${TESTI})
     # If you are under Windows with dynamic libraries, you need to copy dll in the
     # same path than the executable. RPATH is not supported under Windows.

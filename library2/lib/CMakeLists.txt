@@ -15,7 +15,8 @@ set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 add_library(${PROJECT_NAME})
 find_package(library REQUIRED)
-target_link_libraries(${PROJECT_NAME} PUBLIC library)
+target_link_libraries(${PROJECT_NAME} PUBLIC library::library)
+
 # The use of FILE_SET HEADER keeps the tree folder and group header in Visual
 # Studio instead of PUBLIC_HEADER.
 
@@ -61,6 +62,7 @@ install(
 install(
   EXPORT ${PROJECT_NAME}Targets
   FILE ${PROJECT_NAME}Targets.cmake
+  NAMESPACE ${PROJECT_NAME}::
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 
 # Generate and install Config.cmake files.
@@ -82,4 +84,5 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
 # Generation of the export targets for the build tree needs to be after the
 # install(TARGETS) command
 export(EXPORT ${PROJECT_NAME}Targets
-       FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake")
+       FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake"
+       NAMESPACE ${PROJECT_NAME}::)
