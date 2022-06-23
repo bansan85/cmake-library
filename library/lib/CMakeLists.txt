@@ -36,6 +36,9 @@ if(BUILD_SHARED_LIBS)
 else(BUILD_SHARED_LIBS)
   # For static library, you need to add a define to know you built library in
   # static mode.
+
+  # In shared mode, CMake automatically defines ${PROJECT_NAME}_Export in
+  # private.
   target_compile_definitions(${PROJECT_NAME} PUBLIC ${PROJECT_NAME}_STATIC)
 endif()
 
@@ -57,6 +60,8 @@ install(
   ARCHIVE)
 
 # Generate and install Targets.cmake files for find_package.
+
+# NAMESPACE is usefull to generate an alias library::library.
 install(
   EXPORT ${PROJECT_NAME}Targets
   FILE ${PROJECT_NAME}Targets.cmake
@@ -80,7 +85,8 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 
 # Generation of the export targets for the build tree needs to be after the
-# install(TARGETS) command
-export(EXPORT ${PROJECT_NAME}Targets
-       FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake"
-       NAMESPACE ${PROJECT_NAME}::)
+# install(TARGETS) command.
+export(
+  EXPORT ${PROJECT_NAME}Targets
+  FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake"
+  NAMESPACE ${PROJECT_NAME}::)

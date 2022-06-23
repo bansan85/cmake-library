@@ -25,12 +25,12 @@ set(msvc_cxx "$<COMPILE_LANG_AND_ID:CXX,MSVC>")
 
 add_compile_options("$<${msvc_cxx}:/MP>")
 
-# Configuration of the library
+# Build of the library
 add_subdirectory(lib)
 
 # Enable tests.
 include(CTest)
-# BUILD_TESTING is defined via include(CTest)
+# BUILD_TESTING option is defined via include(CTest)
 if(BUILD_TESTING)
   add_subdirectory(tests)
 endif()
