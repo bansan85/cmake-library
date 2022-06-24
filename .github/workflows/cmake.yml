@@ -1,5 +1,5 @@
 ---
-name: Linux build
+name: Build
 on: [push]
 jobs:
   build:
