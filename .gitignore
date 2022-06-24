@@ -1,2 +1,3 @@
 build*
 library*/lib/include/library*/version.h
+library*/lib/include/library*/subfolder/helper.h

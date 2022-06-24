@@ -3,7 +3,7 @@
 #include <library4/subfolder/helper.h>
 
 namespace Lib4 {
-class libtest4_PUBLIC LibCalc {
+class LIBRARY4_EXPORT LibCalc {
 public:
   LibCalc(double c);
 

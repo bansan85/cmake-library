@@ -1,5 +1,20 @@
+set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_LIBDIR}")
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+if(BUILD_SHARED_LIBS)
+  set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+endif(BUILD_SHARED_LIBS)
+
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/version.h.in
                ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/version.h)
+
+add_library(${PROJECT_NAME})
+
+include(GenerateExportHeader)
+
+generate_export_header(
+  ${PROJECT_NAME} BASE_NAME ${PROJECT_NAME} EXPORT_FILE_NAME
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/subfolder/helper.h)
 
 set(${PROJECT_NAME}_SRC ${CMAKE_CURRENT_SOURCE_DIR}/src/lib.cpp)
 set(${PROJECT_NAME}_HEADER
@@ -7,10 +22,6 @@ set(${PROJECT_NAME}_HEADER
     ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/subfolder/helper.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/version.h)
 
-set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_LIBDIR}")
-set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-
-add_library(${PROJECT_NAME})
 find_package(library REQUIRED)
 target_link_libraries(${PROJECT_NAME} PUBLIC library::library)
 
@@ -19,11 +30,10 @@ target_sources(
   PRIVATE ${${PROJECT_NAME}_SRC}
   PUBLIC FILE_SET HEADERS BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include/ FILES
          ${${PROJECT_NAME}_HEADER})
-if(BUILD_SHARED_LIBS)
-  set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-else(BUILD_SHARED_LIBS)
-  target_compile_definitions(${PROJECT_NAME} PUBLIC ${PROJECT_NAME}_STATIC)
-endif()
+if(NOT BUILD_SHARED_LIBS)
+  target_compile_definitions(${PROJECT_NAME}
+                             PUBLIC ${PROJECT_NAME}_STATIC_DEFINE)
+endif(NOT BUILD_SHARED_LIBS)
 
 target_include_directories(
   ${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -58,6 +68,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
               ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 
-export(EXPORT ${PROJECT_NAME}Targets
-       FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake"
-       NAMESPACE ${PROJECT_NAME}::)
+export(
+  EXPORT ${PROJECT_NAME}Targets
+  FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake"
+  NAMESPACE ${PROJECT_NAME}::)

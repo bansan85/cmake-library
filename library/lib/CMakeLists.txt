@@ -1,19 +1,34 @@
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/version.h.in
-               ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/version.h)
-
-set(${PROJECT_NAME}_SRC ${CMAKE_CURRENT_SOURCE_DIR}/src/lib.cpp)
-set(${PROJECT_NAME}_HEADER
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/lib.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/subfolder/helper.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/version.h)
-
 # Linux / gcc will fails to run test when nested dependencies.
 
 # Windows doesn't support RPATH and will do nothing.
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_LIBDIR}")
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
+if(BUILD_SHARED_LIBS)
+  # EXPORT_ALL_SYMBOLS generates .lib with all symbols from .dll. This is needed
+  # because Windows can only link .lib file and will avoid to set the .def file.
+  set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+  # No need to set CMAKE_POSITION_INDEPENDENT_CODE if you don't mix shared and
+  # static library. It's already TRUE for shared library and FALSE for static
+  # library.
+endif(BUILD_SHARED_LIBS)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/version.h.in
+               ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/version.h)
+
 add_library(${PROJECT_NAME})
+
+include(GenerateExportHeader)
+
+generate_export_header(
+  ${PROJECT_NAME} BASE_NAME ${PROJECT_NAME} EXPORT_FILE_NAME
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/subfolder/helper.h)
+
+set(${PROJECT_NAME}_SRC ${CMAKE_CURRENT_SOURCE_DIR}/src/lib.cpp)
+set(${PROJECT_NAME}_HEADER
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/lib.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/subfolder/helper.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/version.h)
 
 # The use of FILE_SET HEADER keeps the tree folder and group header in Visual
 # Studio instead of PUBLIC_HEADER.
@@ -26,21 +41,15 @@ target_sources(
   PRIVATE ${${PROJECT_NAME}_SRC}
   PUBLIC FILE_SET HEADERS BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include/ FILES
          ${${PROJECT_NAME}_HEADER})
-if(BUILD_SHARED_LIBS)
-  # EXPORT_ALL_SYMBOLS generates .lib with all symbols from .dll. This is needed
-  # because Windows can only link .lib file and will avoid to set the .def file.
-  set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-  # No need to set CMAKE_POSITION_INDEPENDENT_CODE if you don't mix shared and
-  # static library. It's already TRUE for shared library and FALSE for static
-  # library.
-else(BUILD_SHARED_LIBS)
+if(NOT BUILD_SHARED_LIBS)
   # For static library, you need to add a define to know you built library in
   # static mode.
 
   # In shared mode, CMake automatically defines ${PROJECT_NAME}_Export in
   # private.
-  target_compile_definitions(${PROJECT_NAME} PUBLIC ${PROJECT_NAME}_STATIC)
-endif()
+  target_compile_definitions(${PROJECT_NAME}
+                             PUBLIC ${PROJECT_NAME}_STATIC_DEFINE)
+endif(NOT BUILD_SHARED_LIBS)
 
 # BUILD_INTERFACE will be the include folder when you build the library.
 
