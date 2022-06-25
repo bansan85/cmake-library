@@ -1,5 +1,13 @@
 # cmake-library
-Template of CMake files to build a static or shared library under Windows and Linux
+
+Template of CMake files to build a static or shared library under Windows and Linux.
+
+CMake is used with the latest features:
+
+  - `TARGET_RUNTIME_DLLS` lists all dynamic libraries (Windows only) dependencies of an executable. These DLL will be copy in the same path than the executable. Needs CMake 3.21.
+  - `FILE_SET HEADER` to install header like `PUBLIC_HEADERS`. But this new feature keeps tree path. The old solution is to `install DIRECTORY include/` but guidelines recommand to use explicit file and avoid wildcard. Needs CMake 3.23.
+
+If you can't use latest CMake, you may have a look at [cxx-static-shared-example](https://github.com/friendlyanon/cxx-static-shared-example). It's another example with a branch for CMake 3.8 and CMake 3.12.
 
 ## Use cases
 
@@ -17,7 +25,7 @@ After, a simple executable `extern` is linked with `library4`.
 
 ## CMakeLists.txt
 
-All interesting data in this POC are in CMakeLists.txt files in `library` folder. The other folders are just a clone of this folder to show that everything is well configured for the worst scenario.
+All interesting data in this POC are in `CMakeLists.txt` files in `library` folder. The other folders are just a clone of this folder to show that everything is working well for the worst scenario.
 
 You need to know the basics of CMake. The whole [official tutorial](https://cmake.org/cmake/help/latest/guide/tutorial/index.html) is perfect.
 
@@ -33,4 +41,4 @@ Under Windows with shared library, you need to copy all libraries in the same fo
 
 Diamond dependency doesn't look to be a problem with this example.
 
-Don't explicitly (on user side) depends on library when linking `library2` or `library3`. But you need to explicitly do it in `Config.cmake` file.
+Don't explicitly (on user side) depends on `library` when linking `library2` or `library3`. But you need to explicitly do it in `Config.cmake` file.
