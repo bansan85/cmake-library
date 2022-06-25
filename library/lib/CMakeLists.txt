@@ -20,6 +20,16 @@ add_library(${PROJECT_NAME})
 
 include(GenerateExportHeader)
 
+# Generate file based on configuration of the library set in target field. This
+# file will set LIBRARY_EXPORT define to:
+
+# * dllimport/dllexport for Windows shared library,
+
+# * visibility ("default") / visibility ("hidden") for Linux shared library,
+
+# * empty for static library.
+
+# See https://gcc.gnu.org/wiki/Visibility for more information.
 generate_export_header(
   ${PROJECT_NAME} BASE_NAME ${PROJECT_NAME} EXPORT_FILE_NAME
   ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/subfolder/helper.h)
@@ -31,12 +41,8 @@ set(${PROJECT_NAME}_HEADER_AUTO
     ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/subfolder/helper.h
     ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/version.h)
 
-# The use of FILE_SET HEADER keeps the tree folder and group header in Visual
-# Studio instead of PUBLIC_HEADER.
-
-# PUBLIC FILE_SET HEADERS will be installed with the library.
-
-# If some headers are private, set them in PRIVATE FILE_SET HEADERS.
+# The use of FILE_SET HEADER (instead of PUBLIC_HEADER) keeps the tree folder
+# and groups header files in Visual Studio.
 target_sources(
   ${PROJECT_NAME}
   PRIVATE ${${PROJECT_NAME}_SRC}
