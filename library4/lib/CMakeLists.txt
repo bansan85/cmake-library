@@ -6,7 +6,7 @@ if(BUILD_SHARED_LIBS)
 endif(BUILD_SHARED_LIBS)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/version.h.in
-               ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/version.h)
+               ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/version.h)
 
 add_library(${PROJECT_NAME})
 
@@ -14,13 +14,14 @@ include(GenerateExportHeader)
 
 generate_export_header(
   ${PROJECT_NAME} BASE_NAME ${PROJECT_NAME} EXPORT_FILE_NAME
-  ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/subfolder/helper.h)
+  ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/subfolder/helper.h)
 
 set(${PROJECT_NAME}_SRC ${CMAKE_CURRENT_SOURCE_DIR}/src/lib.cpp)
 set(${PROJECT_NAME}_HEADER
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/lib.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/subfolder/helper.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/version.h)
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/lib.h)
+set(${PROJECT_NAME}_HEADER_AUTO
+    ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/subfolder/helper.h
+    ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/version.h)
 
 find_package(library2 REQUIRED)
 find_package(library3 REQUIRED)
@@ -31,15 +32,19 @@ target_sources(
   ${PROJECT_NAME}
   PRIVATE ${${PROJECT_NAME}_SRC}
   PUBLIC FILE_SET HEADERS BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include/ FILES
-         ${${PROJECT_NAME}_HEADER})
+         ${${PROJECT_NAME}_HEADER}
+  PUBLIC FILE_SET HEADERS BASE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/include/ FILES
+         ${${PROJECT_NAME}_HEADER_AUTO})
 if(NOT BUILD_SHARED_LIBS)
   target_compile_definitions(${PROJECT_NAME}
                              PUBLIC ${PROJECT_NAME}_STATIC_DEFINE)
 endif(NOT BUILD_SHARED_LIBS)
 
 target_include_directories(
-  ${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-                         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+  ${PROJECT_NAME}
+  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 install(
   TARGETS ${PROJECT_NAME}
