@@ -9,6 +9,8 @@ project(
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
 # You need to explicitly set BUILD_SHARED_LIBS option to enable static / shared
 # library. But don't customize variable name.

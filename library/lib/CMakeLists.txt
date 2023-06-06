@@ -4,15 +4,6 @@
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_LIBDIR}")
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-if(BUILD_SHARED_LIBS)
-  # EXPORT_ALL_SYMBOLS generates .lib with all symbols from .dll. This is needed
-  # because Windows can only link .lib file and will avoid to set the .def file.
-  set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-  # No need to set CMAKE_POSITION_INDEPENDENT_CODE if you don't mix shared and
-  # static library. It's already TRUE for shared library and FALSE for static
-  # library.
-endif(BUILD_SHARED_LIBS)
-
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/version.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/version.h)
 
