@@ -19,12 +19,6 @@ include(GNUInstallDirs)
 # Features to generate .cmake file for find_package.
 include(CMakePackageConfigHelpers)
 
-# Generator expressions
-set(gcc_like_cxx "$<COMPILE_LANG_AND_ID:CXX,ARMClang,AppleClang,Clang,GNU,LCC>")
-set(msvc_cxx "$<COMPILE_LANG_AND_ID:CXX,MSVC>")
-
-add_compile_options("$<${msvc_cxx}:/MP>")
-
 # Configuration of the library
 add_subdirectory(lib)
 

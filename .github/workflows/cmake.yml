@@ -32,6 +32,7 @@ jobs:
             cxx: cl
             os: windows-latest
             buildall: ALL_BUILD
+            cxx_flags: /MP
           - name: clang-cfi
             ar: /usr/bin/llvm-ar-14
             cxx: /usr/bin/clang++-14
