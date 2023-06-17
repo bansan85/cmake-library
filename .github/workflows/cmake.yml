@@ -62,7 +62,7 @@ jobs:
       - name: cmake lib
         run: |
           mkdir build_lib
-          cmake -S library -B build_lib -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_INSTALL_PREFIX="${{ github.workspace }}/install_path" -DCMAKE_CXX_COMPILER="${{ matrix.cxx }}" -DCMAKE_AR="${{ matrix.ar }}" -DCMAKE_RANLIB="${{ matrix.ranlib }}" -DBUILD_SHARED_LIBS:BOOL=${{ matrix.build_shared_libs }} -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }}" -DCMAKE_EXE_LINKER_FLAGS="${{ matrix.ld_flags }}" || exit 1
+          cmake -S library -B build_lib -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_INSTALL_PREFIX="${{ github.workspace }}/install_path" -DCMAKE_CXX_COMPILER="${{ matrix.cxx }}" -DCMAKE_AR="${{ matrix.ar }}" -DCMAKE_RANLIB="${{ matrix.ranlib }}" -DBUILD_SHARED_LIBS:BOOL=${{ matrix.build_shared_libs }} -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }}" -DCMAKE_EXE_LINKER_FLAGS="${{ matrix.ld_flags }}" -DCMAKE_CXX_STANDARD=20 || exit 1
           cmake --build build_lib/ --target ${{ matrix.buildall }} --config ${{ matrix.build_type }} || exit 1
           cmake --build build_lib/ --target install --config ${{ matrix.build_type }} || exit 1
           cd build_lib || exit 1
@@ -77,7 +77,7 @@ jobs:
       - name: cmake lib2
         run: |
           mkdir build_lib2
-          cmake -S library2 -B build_lib2 -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -Dlibrary_DIR="${{ github.workspace }}/install_path/lib/cmake/library" -DCMAKE_INSTALL_PREFIX="${{ github.workspace }}/install_path" -DCMAKE_CXX_COMPILER="${{ matrix.cxx }}" -DCMAKE_AR="${{ matrix.ar }}" -DCMAKE_RANLIB="${{ matrix.ranlib }}" -DBUILD_SHARED_LIBS:BOOL=${{ matrix.build_shared_libs }} -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }}" -DCMAKE_EXE_LINKER_FLAGS="${{ matrix.ld_flags }}" || exit 1
+          cmake -S library2 -B build_lib2 -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -Dlibrary_DIR="${{ github.workspace }}/install_path/lib/cmake/library" -DCMAKE_INSTALL_PREFIX="${{ github.workspace }}/install_path" -DCMAKE_CXX_COMPILER="${{ matrix.cxx }}" -DCMAKE_AR="${{ matrix.ar }}" -DCMAKE_RANLIB="${{ matrix.ranlib }}" -DBUILD_SHARED_LIBS:BOOL=${{ matrix.build_shared_libs }} -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }}" -DCMAKE_EXE_LINKER_FLAGS="${{ matrix.ld_flags }}" -DCMAKE_CXX_STANDARD=20 || exit 1
           cmake --build build_lib2/ --target ${{ matrix.buildall }} --config ${{ matrix.build_type }} || exit 1
           cmake --build build_lib2/ --target install --config ${{ matrix.build_type }} || exit 1
           cd build_lib2 || exit 1
@@ -92,7 +92,7 @@ jobs:
       - name: cmake lib3
         run: |
           mkdir build_lib3
-          cmake -S library3 -B build_lib3 -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -Dlibrary_DIR="${{ github.workspace }}/install_path/lib/cmake/library" -DCMAKE_INSTALL_PREFIX="${{ github.workspace }}/install_path" -DCMAKE_CXX_COMPILER="${{ matrix.cxx }}" -DCMAKE_AR="${{ matrix.ar }}" -DCMAKE_RANLIB="${{ matrix.ranlib }}" -DBUILD_SHARED_LIBS:BOOL=${{ matrix.build_shared_libs }} -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }}" -DCMAKE_EXE_LINKER_FLAGS="${{ matrix.ld_flags }}" || exit 1
+          cmake -S library3 -B build_lib3 -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -Dlibrary_DIR="${{ github.workspace }}/install_path/lib/cmake/library" -DCMAKE_INSTALL_PREFIX="${{ github.workspace }}/install_path" -DCMAKE_CXX_COMPILER="${{ matrix.cxx }}" -DCMAKE_AR="${{ matrix.ar }}" -DCMAKE_RANLIB="${{ matrix.ranlib }}" -DBUILD_SHARED_LIBS:BOOL=${{ matrix.build_shared_libs }} -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }}" -DCMAKE_EXE_LINKER_FLAGS="${{ matrix.ld_flags }}" -DCMAKE_CXX_STANDARD=20 || exit 1
           cmake --build build_lib3/ --target ${{ matrix.buildall }} --config ${{ matrix.build_type }} || exit 1
           cmake --build build_lib3/ --target install --config ${{ matrix.build_type }} || exit 1
           cd build_lib3 || exit 1
@@ -107,7 +107,7 @@ jobs:
       - name: cmake lib4
         run: |
           mkdir build_lib4
-          cmake -S library4 -B build_lib4 -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -Dlibrary_DIR="${{ github.workspace }}/install_path/lib/cmake/library" -Dlibrary2_DIR="${{ github.workspace }}/install_path/lib/cmake/library2" -Dlibrary3_DIR="${{ github.workspace }}/install_path/lib/cmake/library3" -DCMAKE_INSTALL_PREFIX="${{ github.workspace }}/install_path" -DCMAKE_CXX_COMPILER="${{ matrix.cxx }}" -DCMAKE_AR="${{ matrix.ar }}" -DCMAKE_RANLIB="${{ matrix.ranlib }}" -DBUILD_SHARED_LIBS:BOOL=${{ matrix.build_shared_libs }} -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }}" -DCMAKE_EXE_LINKER_FLAGS="${{ matrix.ld_flags }}" || exit 1
+          cmake -S library4 -B build_lib4 -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -Dlibrary_DIR="${{ github.workspace }}/install_path/lib/cmake/library" -Dlibrary2_DIR="${{ github.workspace }}/install_path/lib/cmake/library2" -Dlibrary3_DIR="${{ github.workspace }}/install_path/lib/cmake/library3" -DCMAKE_INSTALL_PREFIX="${{ github.workspace }}/install_path" -DCMAKE_CXX_COMPILER="${{ matrix.cxx }}" -DCMAKE_AR="${{ matrix.ar }}" -DCMAKE_RANLIB="${{ matrix.ranlib }}" -DBUILD_SHARED_LIBS:BOOL=${{ matrix.build_shared_libs }} -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }}" -DCMAKE_EXE_LINKER_FLAGS="${{ matrix.ld_flags }}" -DCMAKE_CXX_STANDARD=20 || exit 1
           cmake --build build_lib4/ --target ${{ matrix.buildall }} --config ${{ matrix.build_type }} || exit 1
           cmake --build build_lib4/ --target install --config ${{ matrix.build_type }} || exit 1
           cd build_lib4 || exit 1
@@ -122,7 +122,7 @@ jobs:
       - name: cmake main
         run: |
           mkdir main
-          cmake -S extern -B main -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -Dlibrary_DIR="${{ github.workspace }}/install_path/lib/cmake/library" -Dlibrary2_DIR="${{ github.workspace }}/install_path/lib/cmake/library2" -Dlibrary3_DIR="${{ github.workspace }}/install_path/lib/cmake/library3" -Dlibrary4_DIR="${{ github.workspace }}/install_path/lib/cmake/library4" -DCMAKE_CXX_COMPILER="${{ matrix.cxx }}" -DCMAKE_AR="${{ matrix.ar }}" -DCMAKE_RANLIB="${{ matrix.ranlib }}" -DBUILD_SHARED_LIBS:BOOL=${{ matrix.build_shared_libs }} -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }}" -DCMAKE_EXE_LINKER_FLAGS="${{ matrix.ld_flags }}" || exit 1
+          cmake -S extern -B main -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -Dlibrary_DIR="${{ github.workspace }}/install_path/lib/cmake/library" -Dlibrary2_DIR="${{ github.workspace }}/install_path/lib/cmake/library2" -Dlibrary3_DIR="${{ github.workspace }}/install_path/lib/cmake/library3" -Dlibrary4_DIR="${{ github.workspace }}/install_path/lib/cmake/library4" -DCMAKE_CXX_COMPILER="${{ matrix.cxx }}" -DCMAKE_AR="${{ matrix.ar }}" -DCMAKE_RANLIB="${{ matrix.ranlib }}" -DBUILD_SHARED_LIBS:BOOL=${{ matrix.build_shared_libs }} -DCMAKE_CXX_FLAGS="${{ matrix.cxx_flags }}" -DCMAKE_EXE_LINKER_FLAGS="${{ matrix.ld_flags }}" -DCMAKE_CXX_STANDARD=20 || exit 1
           cmake --build main/ --target ${{ matrix.buildall }} --config ${{ matrix.build_type }} || exit 1
       - name: ctest main
         shell: bash
