@@ -3,11 +3,11 @@
 #include <library4/subfolder/helper.h>
 
 namespace Lib4 {
-class LIBRARY4_EXPORT LibCalc {
+class LibCalc {
 public:
-  LibCalc(double c);
+  LIBRARY4_EXPORT LibCalc(double c);
 
-  double Calc() const;
+  LIBRARY4_EXPORT double Calc() const;
 
 private:
   double c_;
