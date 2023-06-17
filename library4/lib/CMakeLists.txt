@@ -34,7 +34,7 @@ target_sources(
 if(NOT BUILD_SHARED_LIBS)
   target_compile_definitions(${PROJECT_NAME}
                              PUBLIC ${PROJECT_NAME}_STATIC_DEFINE)
-endif(NOT BUILD_SHARED_LIBS)
+endif()
 
 target_include_directories(
   ${PROJECT_NAME}

@@ -49,7 +49,7 @@ if(NOT BUILD_SHARED_LIBS)
   # private.
   target_compile_definitions(${PROJECT_NAME}
                              PUBLIC ${PROJECT_NAME}_STATIC_DEFINE)
-endif(NOT BUILD_SHARED_LIBS)
+endif()
 
 # BUILD_INTERFACE will be the include folder when you build the library.
 
