@@ -31,10 +31,6 @@ target_sources(
          ${${PROJECT_NAME}_HEADER}
   PUBLIC FILE_SET HEADERS BASE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/include/ FILES
          ${${PROJECT_NAME}_HEADER_AUTO})
-if(NOT BUILD_SHARED_LIBS)
-  target_compile_definitions(${PROJECT_NAME}
-                             PUBLIC ${PROJECT_NAME}_STATIC_DEFINE)
-endif()
 
 target_include_directories(
   ${PROJECT_NAME}

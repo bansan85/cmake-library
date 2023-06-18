@@ -41,15 +41,17 @@ target_sources(
          ${${PROJECT_NAME}_HEADER}
   PUBLIC FILE_SET HEADERS BASE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/include/ FILES
          ${${PROJECT_NAME}_HEADER_AUTO})
-if(NOT BUILD_SHARED_LIBS)
-  # For static library, you need to add a define to know you built library in
-  # static mode.
 
-  # In shared mode, CMake automatically defines ${PROJECT_NAME}_Export in
-  # private.
-  target_compile_definitions(${PROJECT_NAME}
-                             PUBLIC ${PROJECT_NAME}_STATIC_DEFINE)
-endif()
+# For static library, you should define ${PROJECT_NAME}_STATIC_DEFINE variable
+# only if you built library with BUILD_SHARED_LIBS and want to use installed
+# headers in STATIC library.
+
+# In shared mode, CMake automatically defines ${PROJECT_NAME}_Export in private.
+
+#if(NOT BUILD_SHARED_LIBS)
+#  target_compile_definitions(${PROJECT_NAME}
+#                             PUBLIC ${PROJECT_NAME}_STATIC_DEFINE)
+#endif()
 
 # BUILD_INTERFACE will be the include folder when you build the library.
 
