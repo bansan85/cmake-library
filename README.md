@@ -25,7 +25,7 @@ After, a simple executable `extern` is linked with `library4`.
 
 ## CMakeLists.txt
 
-All interesting data in this POC are in `CMakeLists.txt` files in `library` folder. The other folders are just a clone of this folder to show that everything is working well for the worst scenario.
+All interesting data in this POC are in `CMakeLists.txt` files in `library` folder. There is also comment about `BUILD_FETCH_CONTENT` in `lib/CmakeLists.txt` for `library2`. The other folders are just a clone of the main folder to show that everything is working well for the worst scenario.
 
 You need to know the basics of CMake. The whole [official tutorial](https://cmake.org/cmake/help/latest/guide/tutorial/index.html) is perfect.
 
@@ -43,6 +43,8 @@ Diamond dependency doesn't look to be a problem with this example.
 
 Don't explicitly (on user side) depends on `library` when linking `library2` or `library3`. But you need to explicitly do it in `Config.cmake` file.
 
+Libraries can be built with `FetchContent` or `find_package`. Simply set `BUILD_FETCH_CONTENT` option.
+
 ## Fix-me
 
-Don't set `CMAKE_INSTALL_RPATH` and `CMAKE_INSTALL_RPATH_USE_LINK_PATH` in `CMakeLists.txt`. But without it, CI don't pass.
+Don't set `CMAKE_INSTALL_RPATH` and `CMAKE_INSTALL_RPATH_USE_LINK_PATH` in `CMakeLists.txt`. But without it, CI doesn't pass.

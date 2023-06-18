@@ -5,6 +5,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/version.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/version.h)
 
 add_library(${PROJECT_NAME})
+add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 include(GenerateExportHeader)
 
@@ -19,7 +20,31 @@ set(${PROJECT_NAME}_HEADER_AUTO
     ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/subfolder/helper.h
     ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/version.h)
 
-find_package(library REQUIRED)
+# Test compilation / build with FetchContent_Declare or find_package
+if(BUILD_FETCH_CONTENT)
+  include(FetchContent)
+  # There is a target test1 in library and library2. Hack to disable
+  # BUILD_TESTING only in library.
+  set(BUILD_TESTING_SAVE ${BUILD_TESTING})
+  set(BUILD_TESTING OFF)
+  FetchContent_Declare(library SOURCE_DIR
+                               "${CMAKE_CURRENT_SOURCE_DIR}/../../library")
+  # Don't use FetchContent_MakeAvailable since it doesn't support
+  # EXCLUDE_FROM_ALL. If you don't EXCLUDE_FROM_ALL, you will install library
+  # with library2.
+  FetchContent_GetProperties(library)
+  if(NOT library_POPULATED)
+    FetchContent_Populate(library)
+    add_subdirectory(${library_SOURCE_DIR} ${library_BINARY_DIR}
+                     EXCLUDE_FROM_ALL)
+  endif()
+  set(BUILD_TESTING ${BUILD_TESTING_SAVE})
+else()
+  find_package(library REQUIRED)
+endif()
+# With FetchContent, library::library is an alias to library.
+
+# With find_package, it's a real namespace::library.
 target_link_libraries(${PROJECT_NAME} PUBLIC library::library)
 
 target_sources(

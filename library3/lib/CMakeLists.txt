@@ -5,6 +5,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/version.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/version.h)
 
 add_library(${PROJECT_NAME})
+add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 include(GenerateExportHeader)
 
@@ -19,7 +20,22 @@ set(${PROJECT_NAME}_HEADER_AUTO
     ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/subfolder/helper.h
     ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/version.h)
 
-find_package(library REQUIRED)
+if(BUILD_FETCH_CONTENT)
+  include(FetchContent)
+  set(BUILD_TESTING_SAVE ${BUILD_TESTING})
+  set(BUILD_TESTING OFF)
+  FetchContent_Declare(library SOURCE_DIR
+                               "${CMAKE_CURRENT_SOURCE_DIR}/../../library")
+  FetchContent_GetProperties(library)
+  if(NOT library_POPULATED)
+    FetchContent_Populate(library)
+    add_subdirectory(${library_SOURCE_DIR} ${library_BINARY_DIR}
+                     EXCLUDE_FROM_ALL)
+  endif()
+  set(BUILD_TESTING ${BUILD_TESTING_SAVE})
+else()
+  find_package(library REQUIRED)
+endif()
 target_link_libraries(${PROJECT_NAME} PUBLIC library::library)
 
 target_sources(
