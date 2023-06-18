@@ -4,15 +4,6 @@
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_LIBDIR}")
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-if(BUILD_SHARED_LIBS)
-  # EXPORT_ALL_SYMBOLS generates .lib with all symbols from .dll. This is needed
-  # because Windows can only link .lib file and will avoid to set the .def file.
-  set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-  # No need to set CMAKE_POSITION_INDEPENDENT_CODE if you don't mix shared and
-  # static library. It's already TRUE for shared library and FALSE for static
-  # library.
-endif(BUILD_SHARED_LIBS)
-
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/version.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/version.h)
 
@@ -50,15 +41,17 @@ target_sources(
          ${${PROJECT_NAME}_HEADER}
   PUBLIC FILE_SET HEADERS BASE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/include/ FILES
          ${${PROJECT_NAME}_HEADER_AUTO})
-if(NOT BUILD_SHARED_LIBS)
-  # For static library, you need to add a define to know you built library in
-  # static mode.
 
-  # In shared mode, CMake automatically defines ${PROJECT_NAME}_Export in
-  # private.
-  target_compile_definitions(${PROJECT_NAME}
-                             PUBLIC ${PROJECT_NAME}_STATIC_DEFINE)
-endif(NOT BUILD_SHARED_LIBS)
+# For static library, you should define ${PROJECT_NAME}_STATIC_DEFINE variable
+# only if you built library with BUILD_SHARED_LIBS and want to use installed
+# headers in STATIC library.
+
+# In shared mode, CMake automatically defines ${PROJECT_NAME}_Export in private.
+
+#if(NOT BUILD_SHARED_LIBS)
+#  target_compile_definitions(${PROJECT_NAME}
+#                             PUBLIC ${PROJECT_NAME}_STATIC_DEFINE)
+#endif()
 
 # BUILD_INTERFACE will be the include folder when you build the library.
 

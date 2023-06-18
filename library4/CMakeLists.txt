@@ -7,8 +7,8 @@ project(
   LANGUAGES CXX
   VERSION 1.2.3)
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
 # You need to explicitly set BUILD_SHARED_LIBS option to enable static / shared
 # library. But don't customize variable name.
@@ -18,12 +18,6 @@ option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
 include(GNUInstallDirs)
 # Features to generate .cmake file for find_package.
 include(CMakePackageConfigHelpers)
-
-# Generator expressions
-set(gcc_like_cxx "$<COMPILE_LANG_AND_ID:CXX,ARMClang,AppleClang,Clang,GNU,LCC>")
-set(msvc_cxx "$<COMPILE_LANG_AND_ID:CXX,MSVC>")
-
-add_compile_options("$<${msvc_cxx}:/MP>")
 
 # Configuration of the library
 add_subdirectory(lib)

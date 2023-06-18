@@ -1,10 +1,6 @@
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_LIBDIR}")
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-if(BUILD_SHARED_LIBS)
-  set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-endif(BUILD_SHARED_LIBS)
-
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/version.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/version.h)
 
@@ -35,10 +31,6 @@ target_sources(
          ${${PROJECT_NAME}_HEADER}
   PUBLIC FILE_SET HEADERS BASE_DIRS ${CMAKE_CURRENT_BINARY_DIR}/include/ FILES
          ${${PROJECT_NAME}_HEADER_AUTO})
-if(NOT BUILD_SHARED_LIBS)
-  target_compile_definitions(${PROJECT_NAME}
-                             PUBLIC ${PROJECT_NAME}_STATIC_DEFINE)
-endif(NOT BUILD_SHARED_LIBS)
 
 target_include_directories(
   ${PROJECT_NAME}
