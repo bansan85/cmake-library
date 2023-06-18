@@ -8,6 +8,10 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/version.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/version.h)
 
 add_library(${PROJECT_NAME})
+# library will be installed in a namespace library. But if you don't install the
+# library (and use it with add_subdirectory / FetchContent), an alias for
+# library::library is needed.
+add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 include(GenerateExportHeader)
 
@@ -46,12 +50,11 @@ target_sources(
 # only if you built library with BUILD_SHARED_LIBS and want to use installed
 # headers in STATIC library.
 
-# In shared mode, CMake automatically defines ${PROJECT_NAME}_Export in private.
+# For shared library, CMake automatically defines ${PROJECT_NAME}_Export in
+# private.
 
-#if(NOT BUILD_SHARED_LIBS)
-#  target_compile_definitions(${PROJECT_NAME}
-#                             PUBLIC ${PROJECT_NAME}_STATIC_DEFINE)
-#endif()
+# target_compile_definitions(${PROJECT_NAME} PUBLIC
+# ${PROJECT_NAME}_STATIC_DEFINE)
 
 # BUILD_INTERFACE will be the include folder when you build the library.
 

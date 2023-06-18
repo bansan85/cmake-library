@@ -3,11 +3,25 @@ cmake_minimum_required(VERSION 3.21)
 project(Extern)
 
 option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
+option(BUILD_FETCH_CONTENT
+       "Use FetchContext instead of find_package for external library" OFF)
 
-find_package(library REQUIRED)
-find_package(library2 REQUIRED)
-find_package(library3 REQUIRED)
-find_package(library4 REQUIRED)
+if(BUILD_FETCH_CONTENT)
+  include(FetchContent)
+  set(BUILD_TESTING_SAVE ${BUILD_TESTING})
+  set(BUILD_TESTING OFF)
+  FetchContent_Declare(library4 SOURCE_DIR
+                                "${CMAKE_CURRENT_SOURCE_DIR}/../library4")
+  FetchContent_GetProperties(library4)
+  if(NOT library4_POPULATED)
+    FetchContent_Populate(library4)
+    add_subdirectory(${library4_SOURCE_DIR} ${library4_BINARY_DIR}
+                     EXCLUDE_FROM_ALL)
+  endif()
+  set(BUILD_TESTING ${BUILD_TESTING_SAVE})
+else()
+  find_package(library4 REQUIRED)
+endif()
 
 add_executable(test1 main1.cpp)
 target_link_libraries(test1 PRIVATE library::library)

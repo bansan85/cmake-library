@@ -9,6 +9,8 @@ set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
 option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
+option(BUILD_FETCH_CONTENT
+       "Use FetchContext instead of find_package for external library" OFF)
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)

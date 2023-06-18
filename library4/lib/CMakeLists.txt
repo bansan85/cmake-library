@@ -5,6 +5,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/version.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/version.h)
 
 add_library(${PROJECT_NAME})
+add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
 include(GenerateExportHeader)
 
@@ -19,8 +20,31 @@ set(${PROJECT_NAME}_HEADER_AUTO
     ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/subfolder/helper.h
     ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/version.h)
 
-find_package(library2 REQUIRED)
-find_package(library3 REQUIRED)
+if(BUILD_FETCH_CONTENT)
+  include(FetchContent)
+  set(BUILD_TESTING_SAVE ${BUILD_TESTING})
+  set(BUILD_TESTING OFF)
+  FetchContent_Declare(library2 SOURCE_DIR
+                                "${CMAKE_CURRENT_SOURCE_DIR}/../../library2")
+  FetchContent_GetProperties(library2)
+  if(NOT library2_POPULATED)
+    FetchContent_Populate(library2)
+    add_subdirectory(${library2_SOURCE_DIR} ${library2_BINARY_DIR}
+                     EXCLUDE_FROM_ALL)
+  endif()
+  FetchContent_Declare(library3 SOURCE_DIR
+                                "${CMAKE_CURRENT_SOURCE_DIR}/../../library3")
+  FetchContent_GetProperties(library3)
+  if(NOT library3_POPULATED)
+    FetchContent_Populate(library3)
+    add_subdirectory(${library3_SOURCE_DIR} ${library3_BINARY_DIR}
+                     EXCLUDE_FROM_ALL)
+  endif()
+  set(BUILD_TESTING ${BUILD_TESTING_SAVE})
+else()
+  find_package(library2 REQUIRED)
+  find_package(library3 REQUIRED)
+endif()
 target_link_libraries(${PROJECT_NAME} PUBLIC library2::library2
                                              library3::library3)
 
