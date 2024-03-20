@@ -3,6 +3,11 @@ set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/version.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/version.h)
+set_property(
+  DIRECTORY
+  APPEND
+  PROPERTY CMAKE_CONFIGURE_DEPENDS
+           "${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/version.h")
 
 add_library(${PROJECT_NAME})
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
