@@ -6,6 +6,13 @@ set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/version.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/version.h)
+# Need to regenerate version.h if you remove it.
+# https://gitlab.kitware.com/cmake/cmake/-/issues/18985
+set_property(
+  DIRECTORY
+  APPEND
+  PROPERTY CMAKE_CONFIGURE_DEPENDS
+           "${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/version.h")
 
 add_library(${PROJECT_NAME})
 # library will be installed in a namespace library. But if you don't install the
