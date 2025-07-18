@@ -15,17 +15,17 @@ jobs:
         include:
           - name: gcc
             ar: /usr/bin/ar
-            cxx: /usr/bin/g++-11
+            cxx: /usr/bin/g++-13
             ranlib: /usr/bin/ranlib
-            os: ubuntu-22.04
+            os: ubuntu-24.04
             buildall: all
             cxx_flags: -fno-omit-frame-pointer -g -O0
             ld_flags: -Wl,-O0
           - name: clang
-            ar: /usr/bin/llvm-ar-14
-            cxx: /usr/bin/clang++-14
-            ranlib: /usr/bin/llvm-ranlib-14
-            os: ubuntu-22.04
+            ar: /usr/bin/llvm-ar-16
+            cxx: /usr/bin/clang++-16
+            ranlib: /usr/bin/llvm-ranlib-16
+            os: ubuntu-24.04
             buildall: all
             cxx_flags: -fno-omit-frame-pointer -g -O0
             ld_flags: -Wl,-O0
@@ -35,10 +35,10 @@ jobs:
             buildall: ALL_BUILD
             cxx_flags: /MP
           - name: clang-cfi
-            ar: /usr/bin/llvm-ar-14
-            cxx: /usr/bin/clang++-14
-            ranlib: /usr/bin/llvm-ranlib-14
-            os: ubuntu-22.04
+            ar: /usr/bin/llvm-ar-16
+            cxx: /usr/bin/clang++-16
+            ranlib: /usr/bin/llvm-ranlib-16
+            os: ubuntu-24.04
             buildall: all
             cxx_flags: -fno-omit-frame-pointer -g -O0 -fsanitize=cfi -flto=thin -fvisibility=hidden -fno-sanitize-trap=cfi
             ld_flags: -fuse-ld=gold -Wl,-O0
@@ -48,10 +48,10 @@ jobs:
           submodules: recursive
       - name: Install gcc
         if: contains(matrix.cxx, '/g++')
-        run: sudo apt-get install -yq g++-11 gcc-11
+        run: sudo apt-get install -yq g++-13 gcc-13
       - name: Install clang
         if: contains(matrix.cxx, 'clang++')
-        run: sudo apt-get install -yq clang-14 llvm-14
+        run: sudo apt-get install -yq clang-16 llvm-16
       - name: Install NSIS (Linux)
         if: contains(matrix.os, 'ubuntu')
         run: sudo apt-get install -yq nsis
